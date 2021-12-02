@@ -5,7 +5,13 @@ class Chess:
 
         (old_position, new_position) = ((self.Column.index(old_position[0]), int(old_position[1])),
                                         (self.Column.index(new_position[0]), int(new_position[1])))
-        print(old_position, new_position)
+
+        print(old_position, new_position, self.get_figure(old_position).icon)
+
+        hero = self.get_figure(old_position)
+        self.figure_update(hero, new_position)
+        self.Figures[self.Figures.index(hero)] = hero
+
         battlefield = self.update_field(self.Figures)
         self.temporary_print(battlefield)
         pass
@@ -38,12 +44,24 @@ class Chess:
             self.pos_Y = pos_Y
             self.icon = self.icons[(figure, color)]
 
+    def get_figure(self, position):
+        for elem in self.Figures:
+            check = (elem.pos_X, elem.pos_Y)
+            if check == position:
+                return elem
+
+    def figure_update(self, figure, position):
+        figure.pos_X = position[0]
+        figure.pos_Y = position[1]
+
+
     def update_field(self, elements):
+        # python reads line - column, but you need column - line, so reverse
         field = [[0] * 8 for i in range(8)]
         for elem in elements:
             x_update = elem.pos_X
             y_update = elem.pos_Y
-            field[x_update][y_update] = elem.icon
+            field[y_update][x_update] = elem.icon
         return field
 
     def temporary_print(self, field):
@@ -58,41 +76,41 @@ class Chess:
         else:
             return False
 
-    WPawn0 = Figure('Pawn', 'White', 1, 0)
+    WPawn0 = Figure('Pawn', 'White', 0, 1)
     WPawn1 = Figure('Pawn', 'White', 1, 1)
-    WPawn2 = Figure('Pawn', 'White', 1, 2)
-    WPawn3 = Figure('Pawn', 'White', 1, 3)
-    WPawn4 = Figure('Pawn', 'White', 1, 4)
-    WPawn5 = Figure('Pawn', 'White', 1, 5)
-    WPawn6 = Figure('Pawn', 'White', 1, 6)
-    WPawn7 = Figure('Pawn', 'White', 1, 7)
+    WPawn2 = Figure('Pawn', 'White', 2, 1)
+    WPawn3 = Figure('Pawn', 'White', 3, 1)
+    WPawn4 = Figure('Pawn', 'White', 4, 1)
+    WPawn5 = Figure('Pawn', 'White', 5, 1)
+    WPawn6 = Figure('Pawn', 'White', 6, 1)
+    WPawn7 = Figure('Pawn', 'White', 7, 1)
     # _______________________________________________________________
-    BPawn0 = Figure('Pawn', 'Black', 6, 0)
-    BPawn1 = Figure('Pawn', 'Black', 6, 1)
-    BPawn2 = Figure('Pawn', 'Black', 6, 2)
-    BPawn3 = Figure('Pawn', 'Black', 6, 3)
-    BPawn4 = Figure('Pawn', 'Black', 6, 4)
-    BPawn5 = Figure('Pawn', 'Black', 6, 5)
+    BPawn0 = Figure('Pawn', 'Black', 0, 6)
+    BPawn1 = Figure('Pawn', 'Black', 1, 6)
+    BPawn2 = Figure('Pawn', 'Black', 2, 6)
+    BPawn3 = Figure('Pawn', 'Black', 3, 6)
+    BPawn4 = Figure('Pawn', 'Black', 4, 6)
+    BPawn5 = Figure('Pawn', 'Black', 5, 6)
     BPawn6 = Figure('Pawn', 'Black', 6, 6)
-    BPawn7 = Figure('Pawn', 'Black', 6, 7)
+    BPawn7 = Figure('Pawn', 'Black', 7, 6)
     # _______________________________________________________________
     WRook0 = Figure('Rook', 'White', 0, 0)
-    WRook1 = Figure('Rook', 'White', 0, 7)
-    WKnight0 = Figure('Knight', 'White', 0, 1)
-    WKnight1 = Figure('Knight', 'White', 0, 6)
-    WBishop0 = Figure('Bishop', 'White', 0, 2)
-    WBishop1 = Figure('Bishop', 'White', 0, 5)
-    WKing = Figure('King', 'White', 0, 3)
-    WQueen = Figure('Queen', 'White', 0, 4)
+    WRook1 = Figure('Rook', 'White', 7, 0)
+    WKnight0 = Figure('Knight', 'White', 1, 0)
+    WKnight1 = Figure('Knight', 'White', 6, 0)
+    WBishop0 = Figure('Bishop', 'White', 2, 0)
+    WBishop1 = Figure('Bishop', 'White', 5, 0)
+    WKing = Figure('King', 'White', 3, 0)
+    WQueen = Figure('Queen', 'White', 4, 0)
     # _______________________________________________________________
-    BRook0 = Figure('Rook', 'Black', 7, 0)
+    BRook0 = Figure('Rook', 'Black', 0, 7)
     BRook1 = Figure('Rook', 'Black', 7, 7)
-    BKnight0 = Figure('Knight', 'Black', 7, 1)
-    BKnight1 = Figure('Knight', 'Black', 7, 6)
-    BBishop0 = Figure('Bishop', 'Black', 7, 2)
-    BBishop1 = Figure('Bishop', 'Black', 7, 5)
-    BKing = Figure('King', 'Black', 7, 3)
-    BQueen = Figure('Queen', 'Black', 7, 4)
+    BKnight0 = Figure('Knight', 'Black', 1, 7)
+    BKnight1 = Figure('Knight', 'Black', 6, 7)
+    BBishop0 = Figure('Bishop', 'Black', 2, 7)
+    BBishop1 = Figure('Bishop', 'Black', 5, 7)
+    BKing = Figure('King', 'Black', 3, 7)
+    BQueen = Figure('Queen', 'Black', 4, 7)
     # _______________________________________________________________
 
     Figures = [WPawn0, WPawn1, WPawn2, WPawn3, WPawn4, WPawn5, WPawn6, WPawn7, BPawn7, BPawn6, BPawn5, BPawn4,
