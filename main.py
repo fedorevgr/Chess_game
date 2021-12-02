@@ -1,7 +1,11 @@
 class Chess:
 
     def __init__(self):
+
+        battlefield = self.update_field(self.Figures)
+        self.temporary_print(battlefield)
         pass
+        # Field = [[0] * 8 for i in range(8)]
 
     class Figure:
         figure: str
@@ -29,6 +33,26 @@ class Chess:
             self.pos_X = pos_X
             self.pos_Y = pos_Y
             self.icon = self.icons[(figure, color)]
+
+    def update_field(self, elements):
+        field = [[0] * 8 for i in range(8)]
+        for elem in elements:
+            x_update = elem.pos_X
+            y_update = elem.pos_Y
+            field[x_update][y_update] = elem.icon
+        return field
+
+    def temporary_print(self, field):
+        for line in field:
+            print(*line)
+
+    def move_pawn(self, pawn: Figure, New_X, New_Y):
+        x = pawn.pos_X
+        y = pawn.pos_y
+        if x == New_X + 1 and y == New_Y:
+            return True
+        else:
+            return False
 
     WPawn0 = Figure('Pawn', 'White', 1, 0)
     WPawn1 = Figure('Pawn', 'White', 1, 1)
@@ -66,6 +90,11 @@ class Chess:
     BKing = Figure('King', 'Black', 7, 3)
     BQueen = Figure('Queen', 'Black', 7, 4)
     # _______________________________________________________________
-    Field = [[0] * 8 for i in range(8)]
 
+    Figures = [WPawn0, WPawn1, WPawn2, WPawn3, WPawn4, WPawn5, WPawn6, WPawn7, BPawn7, BPawn6, BPawn5, BPawn4,
+               BPawn3, BPawn2, BPawn1, BPawn0, WRook0, WRook1, WKnight1, WKnight0, WBishop0, WBishop1, WKing, WQueen,
+               BRook1, BRook0, BBishop1, BBishop0, BKnight1, BKnight0, BKing, BQueen]
+
+
+Chess()
 
