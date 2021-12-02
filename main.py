@@ -1,7 +1,11 @@
 class Chess:
 
     def __init__(self):
+        old_position, new_position = map(str, input().split(' '))
 
+        (old_position, new_position) = ((self.Column.index(old_position[0]), int(old_position[1])),
+                                        (self.Column.index(new_position[0]), int(new_position[1])))
+        print(old_position, new_position)
         battlefield = self.update_field(self.Figures)
         self.temporary_print(battlefield)
         pass
@@ -95,6 +99,7 @@ class Chess:
                BPawn3, BPawn2, BPawn1, BPawn0, WRook0, WRook1, WKnight1, WKnight0, WBishop0, WBishop1, WKing, WQueen,
                BRook1, BRook0, BBishop1, BBishop0, BKnight1, BKnight0, BKing, BQueen]
 
+    Column = 'ABCDEFGH'
 
 Chess()
 
