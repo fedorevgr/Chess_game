@@ -1,27 +1,43 @@
 class Chess:
 
     def __init__(self):
-        old_position, new_position = map(str, input().split(' '))
-
-        (old_position, new_position) = ((self.Column.index(old_position[0]), int(old_position[1])),
-                                        (self.Column.index(new_position[0]), int(new_position[1])))
-
-        print(old_position, new_position, self.get_figure(old_position).icon)
-
-        hero = self.get_figure(old_position)
-        self.figure_update(hero, new_position)
-        self.Figures[self.Figures.index(hero)] = hero
-
         battlefield = self.update_field(self.Figures)
+        self.print_battlefield(battlefield)
         self.temporary_print(battlefield)
+
+        move = 0
+        while True:
+            old_position, new_position = map(str, input().split(' '))
+
+            (old_position, new_position) = ((self.Column.index(old_position[0]), int(old_position[1]) - 1),
+                                            (self.Column.index(new_position[0]), int(new_position[1]) - 1))
+
+            print(old_position, new_position, self.get_figure(old_position).icon)
+
+            color = move % 2
+            if color == 0:
+                color = 'White'
+            else:
+                color = 'Black'
+            print(color)
+
+            hero = self.get_figure(old_position)
+            if self.check_move(hero, new_position, color):
+                self.figure_update(hero, new_position)
+                self.Figures[self.Figures.index(hero)] = hero
+            else:
+                print('Wrong move, repeat your move pls')
+
+            battlefield = self.update_field(self.Figures)
+            self.temporary_print(battlefield)
         pass
         # Field = [[0] * 8 for i in range(8)]
 
     class Figure:
         figure: str
         color: str
-        pos_X: int
-        pos_Y: int
+        column: int
+        line: int
         icon: str
 
         icons = {('Pawn', 'White'): '♙',
@@ -37,30 +53,41 @@ class Chess:
                  ('Knight', 'Black'): '♞︎',
                  ('King', 'Black'): '♚︎'}
 
-        def __init__(self, figure, color, pos_X, pos_Y):
+        def __init__(self, figure, color, column, line):
             self.figure = figure
             self.color = color
-            self.pos_X = pos_X
-            self.pos_Y = pos_Y
+            self.column = column
+            self.line = line
             self.icon = self.icons[(figure, color)]
+
+    def check_move(self, figure, position, color):
+        name = figure.figure
+        print(name)
+        old_position = (figure.column, figure.line)
+        output = False
+        if name == 'Pawn':
+            if color == 'White':
+                output = self.move_pawn(figure, position[0], position[1])
+                #print(self.move_pawn(figure, position[0], position[1]), 'lll')
+        return output
 
     def get_figure(self, position):
         for elem in self.Figures:
-            check = (elem.pos_X, elem.pos_Y)
+            check = (elem.column, elem.line)
             if check == position:
                 return elem
 
     def figure_update(self, figure, position):
-        figure.pos_X = position[0]
-        figure.pos_Y = position[1]
+        figure.column = position[0]
+        figure.line = position[1]
 
 
     def update_field(self, elements):
         # python reads line - column, but you need column - line, so reverse
         field = [[0] * 8 for i in range(8)]
         for elem in elements:
-            x_update = elem.pos_X
-            y_update = elem.pos_Y
+            x_update = elem.column
+            y_update = elem.line
             field[y_update][x_update] = elem.icon
         return field
 
@@ -69,12 +96,30 @@ class Chess:
             print(*line)
 
     def move_pawn(self, pawn: Figure, New_X, New_Y):
-        x = pawn.pos_X
-        y = pawn.pos_y
-        if x == New_X + 1 and y == New_Y:
+        column = pawn.column
+        line = pawn.line
+        #print((column, line), (New_X, New_Y))
+        if (column == New_X) and (line + 1 == New_Y):
             return True
         else:
             return False
+
+    def print_battlefield(self, field):
+        print(' ', end='')
+        for elem in self.Column:
+            print(elem, end='    ')
+        print(' ')
+        for line in field:
+            print('|', end=' ')
+            for elem in line:
+                printing = elem
+                if printing == 0:
+                    printing = '⠀' + " ***"
+
+                print(printing, end=' | ')
+            print(' ')
+            print('-------------------------------------')
+        print(' ')
 
     WPawn0 = Figure('Pawn', 'White', 0, 1)
     WPawn1 = Figure('Pawn', 'White', 1, 1)
@@ -119,5 +164,5 @@ class Chess:
 
     Column = 'ABCDEFGH'
 
-Chess()
 
+Chess()
