@@ -3,7 +3,7 @@ class Chess:
     def __init__(self):
         battlefield = self.update_field(self.Figures)
         self.print_battlefield(battlefield)
-        self.temporary_print(battlefield)
+        # self.temporary_print(battlefield)
 
         move = 0
         while True:
@@ -29,7 +29,7 @@ class Chess:
                 print('Wrong move, repeat your move pls')
 
             battlefield = self.update_field(self.Figures)
-            self.temporary_print(battlefield)
+            self.print_battlefield(battlefield)
         pass
         # Field = [[0] * 8 for i in range(8)]
 
@@ -67,8 +67,15 @@ class Chess:
         output = False
         if name == 'Pawn':
             if color == 'White':
-                output = self.move_pawn(figure, position[0], position[1])
-                #print(self.move_pawn(figure, position[0], position[1]), 'lll')
+                output = self.move_pawn_white(figure, position[0], position[1])
+                output = output or self.check_first_move_white(figure, position[0], position[1])
+                output = output or self.white_pawn_can_eat(figure, position[0], position[1])
+                output = output and self.white_pawn_check_ahead(figure, position[0], position[1])
+                if self.white_pawn_can_eat(figure, position[0], position[1]):
+                    to_delete = self.get_figure((position[0], position[1]))
+                    self.Figures.remove(to_delete)
+
+                # print(self.move_pawn(figure, position[0], position[1]), 'lll')
         return output
 
     def get_figure(self, position):
@@ -80,7 +87,6 @@ class Chess:
     def figure_update(self, figure, position):
         figure.column = position[0]
         figure.line = position[1]
-
 
     def update_field(self, elements):
         # python reads line - column, but you need column - line, so reverse
@@ -95,7 +101,17 @@ class Chess:
         for line in field:
             print(*line)
 
-    def move_pawn(self, pawn: Figure, New_X, New_Y):
+    # Check move _____________________________________________________________________________________________________
+
+    def white_pawn_check_ahead(self, pawn: Figure, New_X, New_Y):
+        if pawn.column == New_X and pawn.line + 1 == New_Y:
+            for elem in self.Figures:
+                if New_X == elem.column and New_Y == elem.line:
+                    return False
+            else:
+                return True
+
+    def move_pawn_white(self, pawn: Figure, New_X, New_Y):
         column = pawn.column
         line = pawn.line
         #print((column, line), (New_X, New_Y))
@@ -103,6 +119,35 @@ class Chess:
             return True
         else:
             return False
+
+    def check_first_move_white(self, pawn: Figure, New_X, New_Y):
+        line = pawn.line
+        column = pawn.column
+        if line == 1:
+            if column == New_X and line + 2 == New_Y:
+                return True
+            else:
+                return False
+        else:
+            return False
+
+    def white_pawn_can_eat(self, pawn: Figure, New_X, New_Y):
+        is_standing_on = False
+        column = pawn.column
+        line = pawn.line
+        for element in self.Figures:
+            if (element.column, element.line) == (New_X, New_Y):
+                is_standing_on = True
+        if column + 1 == New_X or column - 1 == New_X:
+            if line + 1 == New_Y and is_standing_on:
+                return True
+            else:
+                return False
+        else:
+            return False
+
+
+    # Print __________________________________________________________________________________________________________
 
     def print_battlefield(self, field):
         print(' ', end='')
@@ -114,7 +159,7 @@ class Chess:
             for elem in line:
                 printing = elem
                 if printing == 0:
-                    printing = '⠀' + " ***"
+                    printing = '⠀ '
 
                 print(printing, end=' | ')
             print(' ')
