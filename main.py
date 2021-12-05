@@ -3,11 +3,12 @@ class Chess:
     def __init__(self):
         battlefield = self.update_field(self.Figures)
         self.print_battlefield(battlefield)
-        # self.temporary_print(battlefield)
 
         move = 0
+
         while True:
             color = move % 2
+
             if color == 0:
                 color = 'White'
             else:
@@ -25,6 +26,7 @@ class Chess:
             if self.check_move(hero, new_position, color):
                 self.figure_update(hero, new_position)
                 self.Figures[self.Figures.index(hero)] = hero
+
                 move += 1
             else:
                 print('Wrong move, repeat your move pls')
@@ -33,7 +35,6 @@ class Chess:
             self.print_battlefield(battlefield)
 
         pass
-        # Field = [[0] * 8 for i in range(8)]
 
     class Figure:
         figure: str
@@ -65,8 +66,11 @@ class Chess:
     def check_move(self, figure, position, color):
         name = figure.figure
         print(name)
+
         old_position = (figure.column, figure.line)
+
         output = False
+
         if name == 'Pawn':
             if color == 'White':
                 output = self.move_pawn_white(figure, position[0], position[1])
@@ -80,13 +84,9 @@ class Chess:
             else:
                 output = self.move_pawn_black(figure, position[0], position[1])
                 output = output and self.black_pawn_check_ahead(figure, position[0], position[1])
-                # print(output)
                 output = output or self.check_first_move_black(figure, position[0], position[1])
-                # print(output)
                 output = output or self.black_pawn_can_eat(figure, position[0], position[1])
-                # print(output)
 
-                # print(output)
                 if self.black_pawn_can_eat(figure, position[0], position[1]):
                     to_delete = self.get_figure((position[0], position[1]))
                     self.Figures.remove(to_delete)
@@ -109,6 +109,7 @@ class Chess:
         for elem in elements:
             x_update = elem.column
             y_update = elem.line
+
             field[y_update][x_update] = elem.icon
         return field
 
@@ -131,7 +132,7 @@ class Chess:
     def move_pawn_white(self, pawn: Figure, New_X, New_Y):
         column = pawn.column
         line = pawn.line
-        #print((column, line), (New_X, New_Y))
+
         if (column == New_X) and (line + 1 == New_Y):
             return True
         else:
@@ -140,6 +141,7 @@ class Chess:
     def check_first_move_white(self, pawn: Figure, New_X, New_Y):
         line = pawn.line
         column = pawn.column
+
         if line == 1:
             if column == New_X and line + 2 == New_Y:
                 return True
@@ -150,8 +152,10 @@ class Chess:
 
     def white_pawn_can_eat(self, pawn: Figure, New_X, New_Y):
         is_standing_on = False
+
         column = pawn.column
         line = pawn.line
+
         for element in self.Figures:
             if (element.column, element.line) == (New_X, New_Y):
                 is_standing_on = True
@@ -176,7 +180,7 @@ class Chess:
     def move_pawn_black(self, pawn: Figure, New_X, New_Y):
         column = pawn.column
         line = pawn.line
-        #print((column, line), (New_X, New_Y))
+
         if (column == New_X) and (line - 1 == New_Y):
             return True
         else:
@@ -185,6 +189,7 @@ class Chess:
     def check_first_move_black(self, pawn: Figure, New_X, New_Y):
         line = pawn.line
         column = pawn.column
+
         if line == 6:
             if column == New_X and line - 2 == New_Y:
                 return True
@@ -195,8 +200,10 @@ class Chess:
 
     def black_pawn_can_eat(self, pawn: Figure, New_X, New_Y):
         is_standing_on = False
+
         column = pawn.column
         line = pawn.line
+
         for element in self.Figures:
             if (element.column, element.line) == (New_X, New_Y):
                 is_standing_on = True
@@ -269,6 +276,5 @@ class Chess:
                BRook1, BRook0, BBishop1, BBishop0, BKnight1, BKnight0, BKing, BQueen]
 
     Column = 'ABCDEFGH'
-
 
 Chess()
