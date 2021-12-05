@@ -7,6 +7,13 @@ class Chess:
 
         move = 0
         while True:
+            color = move % 2
+            if color == 0:
+                color = 'White'
+            else:
+                color = 'Black'
+            print(color, 'move ->', end=' ')
+
             old_position, new_position = map(str, input().split(' '))
 
             (old_position, new_position) = ((self.Column.index(old_position[0]), int(old_position[1]) - 1),
@@ -14,22 +21,17 @@ class Chess:
 
             print(old_position, new_position, self.get_figure(old_position).icon)
 
-            color = move % 2
-            if color == 0:
-                color = 'White'
-            else:
-                color = 'Black'
-            print(color)
-
             hero = self.get_figure(old_position)
             if self.check_move(hero, new_position, color):
                 self.figure_update(hero, new_position)
                 self.Figures[self.Figures.index(hero)] = hero
+                move += 1
             else:
                 print('Wrong move, repeat your move pls')
 
             battlefield = self.update_field(self.Figures)
             self.print_battlefield(battlefield)
+
         pass
         # Field = [[0] * 8 for i in range(8)]
 
@@ -68,14 +70,27 @@ class Chess:
         if name == 'Pawn':
             if color == 'White':
                 output = self.move_pawn_white(figure, position[0], position[1])
+                output = output and self.white_pawn_check_ahead(figure, position[0], position[1])
                 output = output or self.check_first_move_white(figure, position[0], position[1])
                 output = output or self.white_pawn_can_eat(figure, position[0], position[1])
-                output = output and self.white_pawn_check_ahead(figure, position[0], position[1])
+
                 if self.white_pawn_can_eat(figure, position[0], position[1]):
                     to_delete = self.get_figure((position[0], position[1]))
                     self.Figures.remove(to_delete)
+            else:
+                output = self.move_pawn_black(figure, position[0], position[1])
+                output = output and self.black_pawn_check_ahead(figure, position[0], position[1])
+                # print(output)
+                output = output or self.check_first_move_black(figure, position[0], position[1])
+                # print(output)
+                output = output or self.black_pawn_can_eat(figure, position[0], position[1])
+                # print(output)
 
-                # print(self.move_pawn(figure, position[0], position[1]), 'lll')
+                # print(output)
+                if self.black_pawn_can_eat(figure, position[0], position[1]):
+                    to_delete = self.get_figure((position[0], position[1]))
+                    self.Figures.remove(to_delete)
+
         return output
 
     def get_figure(self, position):
@@ -104,12 +119,14 @@ class Chess:
     # Check move _____________________________________________________________________________________________________
 
     def white_pawn_check_ahead(self, pawn: Figure, New_X, New_Y):
-        if pawn.column == New_X and pawn.line + 1 == New_Y:
+        if pawn.column == New_X and (pawn.line + 1 == New_Y or pawn.line + 2 == New_Y):
             for elem in self.Figures:
                 if New_X == elem.column and New_Y == elem.line:
                     return False
             else:
                 return True
+        else:
+            return False
 
     def move_pawn_white(self, pawn: Figure, New_X, New_Y):
         column = pawn.column
@@ -146,6 +163,50 @@ class Chess:
         else:
             return False
 
+    def black_pawn_check_ahead(self, pawn: Figure, New_X, New_Y):
+        if pawn.column == New_X and (pawn.line - 1 == New_Y or pawn.line - 2 == New_Y):
+            for elem in self.Figures:
+                if New_X == elem.column and New_Y == elem.line:
+                    return False
+            else:
+                return True
+        else:
+            return False
+
+    def move_pawn_black(self, pawn: Figure, New_X, New_Y):
+        column = pawn.column
+        line = pawn.line
+        #print((column, line), (New_X, New_Y))
+        if (column == New_X) and (line - 1 == New_Y):
+            return True
+        else:
+            return False
+
+    def check_first_move_black(self, pawn: Figure, New_X, New_Y):
+        line = pawn.line
+        column = pawn.column
+        if line == 6:
+            if column == New_X and line - 2 == New_Y:
+                return True
+            else:
+                return False
+        else:
+            return False
+
+    def black_pawn_can_eat(self, pawn: Figure, New_X, New_Y):
+        is_standing_on = False
+        column = pawn.column
+        line = pawn.line
+        for element in self.Figures:
+            if (element.column, element.line) == (New_X, New_Y):
+                is_standing_on = True
+        if column - 1 == New_X or column + 1 == New_X:
+            if line - 1 == New_Y and is_standing_on:
+                return True
+            else:
+                return False
+        else:
+            return False
 
     # Print __________________________________________________________________________________________________________
 
