@@ -247,21 +247,32 @@ class Chess:
     # Print __________________________________________________________________________________________________________
 
     def print_battlefield(self, field):
-        print(' ', end='')
-        for elem in self.Column:
-            print(elem, end='    ')
-        print(' ')
-        for line in field:
-            print('|', end=' ')
-            for elem in line:
-                printing = elem
-                if printing == 0:
-                    printing = '⠀ '
+        print('┌────┬────┬────┬────┬────┬────┬────┬────┐')
+        print('ABCDEFGH')
 
-                print(printing, end=' | ')
+        for line in field:
+            print('│', end='')
+
+            for symbl in line:
+                if symbl == '♗':
+                    symbl = '♗' + ' '
+                elif symbl == '♕':
+                    symbl = '♛' + ' '
+                elif symbl == '♙':
+                    symbl = '♙' + ' '
+                elif symbl == 0:
+                    symbl = '  '
+
+                to_print = ' ' + symbl + ' '
+
+                print(to_print, end='│')
+
             print(' ')
-            print('-------------------------------------')
-        print(' ')
+
+            if field.index(line) != 7:
+                print('├────┼────┼────┼────┼────┼────┼────┼────┤')
+            else:
+                print('└────┴────┴────┴────┴────┴────┴────┴────┘')
 
     WPawn0 = Figure('Pawn', 'White', 0, 1)
     WPawn1 = Figure('Pawn', 'White', 1, 1)
