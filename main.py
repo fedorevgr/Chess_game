@@ -91,6 +91,13 @@ class Chess:
                     to_delete = self.get_figure((position[0], position[1]))
                     self.Figures.remove(to_delete)
 
+        elif name == 'Knight':
+            output = self.check_knight(figure, position[0], position[1])
+
+            if output and self.knight_can_eat(position[0], position[1]):
+                to_delete = self.get_figure((position[0], position[1]))
+                self.Figures.remove(to_delete)
+
         return output
 
     def get_figure(self, position):
@@ -215,6 +222,28 @@ class Chess:
         else:
             return False
 
+    # _________________________________________________________________________________________________________________
+
+    def check_knight(self, knight: Figure, New_X, New_Y):
+        try:
+            column = knight.column
+            line = knight.line
+
+            if (column + 1 == New_X or column - 1 == New_X) and (line + 2 == New_Y or line - 2 == New_Y):
+                return True
+            elif (column + 2 == New_X or column - 2 == New_X) and (line + 1 == New_Y or line - 1 == New_Y):
+                return True
+            else:
+                return False
+        except:
+            return False
+
+    def knight_can_eat(self, New_X, New_Y):
+        for elem in self.Figures:
+            if elem.column == New_X and elem.line == New_Y:
+                return True
+        return False
+
     # Print __________________________________________________________________________________________________________
 
     def print_battlefield(self, field):
@@ -276,5 +305,6 @@ class Chess:
                BRook1, BRook0, BBishop1, BBishop0, BKnight1, BKnight0, BKing, BQueen]
 
     Column = 'ABCDEFGH'
+
 
 Chess()
