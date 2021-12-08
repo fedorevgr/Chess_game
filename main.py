@@ -244,15 +244,42 @@ class Chess:
                 return True
         return False
 
+    # ________________________________________________________________________________________________________________
+
+    def bishop_can_get_to(self, bishop: Figure, New_X, New_Y):
+        delta_column = abs(bishop.column - New_X)
+        delta_line = abs(bishop.line - New_Y)
+        if delta_column == delta_line:
+            return True
+        else:
+            return False
+
+    def check_figures_on_bishops_way(self, bishop: Figure, New_X, New_Y):
+        column = bishop.column
+        line = bishop.line
+
+        if New_X > column and line > New_Y:
+            direction = 'UpRight'
+        elif New_X > column and line < New_Y:
+            direction = 'DownRight'
+        elif New_X < column and line > New_Y:
+            direction = 'UpLeft'
+        else:
+            direction = 'DownLeft'
+
+        for plus in range
+
     # Print __________________________________________________________________________________________________________
 
     def print_battlefield(self, field):
         print('┌────┬────┬────┬────┬────┬────┬────┬────┬────┐')
-        print('│    │ A  │ B  │ C  │ D  │ E  │ F  │ G  │ H  │')
+        print('│COCK│ A  │ B  │ C  │ D  │ E  │ F  │ G  │ H  │')
         print('├────┼────┼────┼────┼────┼────┼────┼────┼────┤')
-
+        i = 0
         for line in field:
-            print('│ ' + str(field.index(line) + 1) +  '  │', end='')
+            i += 1
+
+            print('│ ' + str(i) + '  │', end='')
 
             for symbl in line:
                 if symbl == '♗':
@@ -270,7 +297,7 @@ class Chess:
 
             print(' ')
 
-            if field.index(line) != 7:
+            if i != 8:
                 print('├────┼────┼────┼────┼────┼────┼────┼────┼────┤')
             else:
                 print('└────┴────┴────┴────┴────┴────┴────┴────┴────┘')
