@@ -98,6 +98,18 @@ class Chess:
                 to_delete = self.get_figure((position[0], position[1]))
                 self.Figures.remove(to_delete)
 
+        elif name == 'Bishop':
+            output = self.bishop_can_get_to(figure, position[0], position[1])
+
+            if output:
+                output = self.check_figures_on_bishops_way(figure, position[0], position[1])
+                print(output)
+
+                for elem in self.Figures:
+                    if (elem.column, elem.line) == (position[0], position[1]):
+                        to_delete = self.get_figure((position[0], position[1]))
+                        self.Figures.remove(to_delete)
+
         return output
 
     def get_figure(self, position):
@@ -119,10 +131,6 @@ class Chess:
 
             field[y_update][x_update] = elem.icon
         return field
-
-    def temporary_print(self, field):
-        for line in field:
-            print(*line)
 
     # Check move _____________________________________________________________________________________________________
 
@@ -259,15 +267,87 @@ class Chess:
         line = bishop.line
 
         if New_X > column and line > New_Y:
-            direction = 'UpRight'
-        elif New_X > column and line < New_Y:
-            direction = 'DownRight'
-        elif New_X < column and line > New_Y:
-            direction = 'UpLeft'
-        else:
-            direction = 'DownLeft'
+            # 'UpRight'
+            limit = (8, 0)
 
-        for plus in range
+            steps = min(8 - column, line)
+
+            for delta in range(steps):
+                column = column + delta
+                line = line - delta
+
+                for elem in self.Figures:
+                    if (elem.column, elem.line) == (column, line):
+                        limit = (column, line)
+                        break
+
+            if limit[0] >= New_X and limit[1] <= New_Y:
+                return True
+            else:
+                return False
+
+        elif New_X > column and line < New_Y:
+            # 'DownRight'
+            limit = (8, 8)
+
+            steps = min(8 - column, 8 - line)
+
+            for delta in range(steps):
+                column = column + delta + 1
+                line = line + delta + 1
+
+                for elem in self.Figures:
+                    if (elem.column, elem.line) == (column, line):
+                        limit = (column, line)
+                        break
+
+            if limit[0] >= New_X and limit[1] >= New_Y:
+                return True
+            else:
+                return False
+
+        elif New_X < column and line > New_Y:
+            # 'UpLeft'
+            limit = (0, 0)
+
+            steps = min(column, line)
+
+            for delta in range(steps):
+                column = column - delta - 1
+                line = line - delta - 1
+
+                for elem in self.Figures:
+                    if (elem.column, elem.line) == (column, line):
+                        limit = (column, line)
+                        break
+
+            if limit[0] <= New_X and limit[1] <= New_Y:
+                return True
+            else:
+                return False
+        else:
+            # 'DownLeft'
+            limit = (0, 8)
+
+            steps = min(column, 8 - line)
+
+            print(steps)
+
+            for delta in range(steps):
+                column = column - delta - 1
+                line = line + delta + 1
+
+                for elem in self.Figures:
+                    if (elem.column, elem.line) == (column, line):
+                        print(elem)
+                        limit = (column, line)
+                        break
+
+            print(limit)
+            if limit[0] <= New_X and limit[1] >= New_Y:
+                return True
+            else:
+                return False
 
     # Print __________________________________________________________________________________________________________
 
