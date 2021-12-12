@@ -273,8 +273,8 @@ class Chess:
             steps = min(8 - column, line)
 
             for delta in range(steps):
-                column = column + delta
-                line = line - delta
+                column = column + delta + 1
+                line = line - delta - 1
 
                 for elem in self.Figures:
                     if (elem.column, elem.line) == (column, line):
@@ -348,6 +348,10 @@ class Chess:
                 return True
             else:
                 return False
+
+    # ________________________________________________________________________________________________________________
+
+
 
     # Print __________________________________________________________________________________________________________
 
