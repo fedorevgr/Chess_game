@@ -34,7 +34,14 @@ class Chess:
             battlefield = self.update_field(self.Figures)
             self.print_battlefield(battlefield)
 
-        pass
+            if self.WKing not in self.Figures:
+                winner = self.BKing.color
+                break
+            elif self.BKing not in self.Figures:
+                winner = self.WKing.color
+                break
+
+        print(f'Game ended,\n{winner} wins the game!')
 
     class Figure:
         figure: str
@@ -65,7 +72,7 @@ class Chess:
 
     def check_move(self, figure, position, color):
         name = figure.figure
-        print(name)
+        # print(name)
 
         if figure.color != color:
             return False
@@ -104,7 +111,6 @@ class Chess:
 
             if output:
                 output = self.check_figures_on_bishops_way(figure, position[0], position[1])
-                print(output)
 
                 if output:
                         for elem in self.Figures:
@@ -368,7 +374,7 @@ class Chess:
 
             steps = min(column, 8 - line)
 
-            print(steps)
+            # print(steps)
 
             for delta in range(steps):
                 column = column - delta - 1
@@ -376,11 +382,11 @@ class Chess:
 
                 for elem in self.Figures:
                     if (elem.column, elem.line) == (column, line):
-                        print(elem)
+                        # print(elem)
                         limit = (column, line)
                         break
 
-            print(limit)
+            # print(limit)
             if limit[0] <= New_X and limit[1] >= New_Y:
                 return True
             else:
@@ -413,7 +419,7 @@ class Chess:
 
                 for elem in self.Figures:
                     if (elem.column, elem.line) == (column, line):
-                        print(elem.icon)
+                        # print(elem.icon)
                         limit = (column, line)
                         end = True
                         break
@@ -438,7 +444,7 @@ class Chess:
 
                 for elem in self.Figures:
                     if (elem.column, elem.line) == (column, line):
-                        print(elem.icon)
+                        # print(elem.icon)
                         limit = (column, line)
                         end = True
                         break
@@ -463,7 +469,7 @@ class Chess:
 
                 for elem in self.Figures:
                     if (elem.column, elem.line) == (column, line):
-                        print(elem.icon)
+                        # print(elem.icon)
                         limit = (column, line)
                         end = True
                         break
@@ -487,7 +493,7 @@ class Chess:
 
                 for elem in self.Figures:
                     if (elem.column, elem.line) == (column, line):
-                        print(elem.icon)
+                        # print(elem.icon)
                         limit = (column, line)
                         end = True
                         break
