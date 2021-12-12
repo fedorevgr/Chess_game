@@ -67,7 +67,8 @@ class Chess:
         name = figure.figure
         print(name)
 
-        old_position = (figure.column, figure.line)
+        if figure.color != color:
+            return False
 
         output = False
 
@@ -105,10 +106,11 @@ class Chess:
                 output = self.check_figures_on_bishops_way(figure, position[0], position[1])
                 print(output)
 
-                for elem in self.Figures:
-                    if (elem.column, elem.line) == (position[0], position[1]):
-                        to_delete = self.get_figure((position[0], position[1]))
-                        self.Figures.remove(to_delete)
+                if output:
+                        for elem in self.Figures:
+                            if (elem.column, elem.line) == (position[0], position[1]):
+                                to_delete = self.get_figure((position[0], position[1]))
+                                self.Figures.remove(to_delete)
 
         elif name == 'Rook':
             output = self.rook_can_get_to(figure, position[0], position[1])
@@ -116,6 +118,30 @@ class Chess:
             if output:
                 output = self.check_figures_on_rooks_way(figure, position[0], position[1])
 
+                if output:
+                    for elem in self.Figures:
+                        if (elem.column, elem.line) == (position[0], position[1]):
+                            to_delete = self.get_figure((position[0], position[1]))
+                            self.Figures.remove(to_delete)
+
+        elif name == 'Queen':
+            output = self.bishop_can_get_to(figure, position[0], position[1])
+            output = output or self.rook_can_get_to(figure, position[0], position[1])
+
+            if output:
+                output = self.check_figures_on_rooks_way(figure, position[0], position[1])
+                output = output or self.check_figures_on_bishops_way(figure, position[0], position[1])
+
+                if output:
+                    for elem in self.Figures:
+                        if (elem.column, elem.line) == (position[0], position[1]):
+                            to_delete = self.get_figure((position[0], position[1]))
+                            self.Figures.remove(to_delete)
+
+        elif name == 'King':
+            output = self.king_can_get_to(figure, position[0], position[1])
+
+            if output:
                 for elem in self.Figures:
                     if (elem.column, elem.line) == (position[0], position[1]):
                         to_delete = self.get_figure((position[0], position[1]))
@@ -378,6 +404,8 @@ class Chess:
         if column < New_X and line == New_Y:  # Right
             limit = (7, line)
 
+            end = False
+
             steps = 8 - column
 
             for delta in range(steps):
@@ -385,9 +413,13 @@ class Chess:
 
                 for elem in self.Figures:
                     if (elem.column, elem.line) == (column, line):
-                        print(elem)
+                        print(elem.icon)
                         limit = (column, line)
+                        end = True
                         break
+
+                if end:
+                    break
 
             if limit[0] >= New_X and limit[1] == New_Y:
                 return True
@@ -397,6 +429,8 @@ class Chess:
         elif column > New_X and line == New_Y:  # Left
             limit = (0, line)
 
+            end = False
+
             steps = column
 
             for delta in range(steps):
@@ -404,9 +438,13 @@ class Chess:
 
                 for elem in self.Figures:
                     if (elem.column, elem.line) == (column, line):
-                        print(elem)
+                        print(elem.icon)
                         limit = (column, line)
+                        end = True
                         break
+
+                if end:
+                    break
 
             if limit[0] <= New_X and limit[1] == New_Y:
                 return True
@@ -416,6 +454,8 @@ class Chess:
         elif column == New_X and line > New_Y:  # Up
             limit = (column, 0)
 
+            end = False
+
             steps = line
 
             for delta in range(steps):
@@ -423,17 +463,22 @@ class Chess:
 
                 for elem in self.Figures:
                     if (elem.column, elem.line) == (column, line):
-                        print(elem)
+                        print(elem.icon)
                         limit = (column, line)
+                        end = True
                         break
+                if end:
+                    break
 
             if limit[0] == New_X and limit[1] <= New_Y:
                 return True
             else:
                 return False
 
-        else:  # Down
+        elif column == New_X and line < New_Y:  # Down
             limit = (column, 7)
+
+            end = False
 
             steps = 8 - line
 
@@ -442,14 +487,28 @@ class Chess:
 
                 for elem in self.Figures:
                     if (elem.column, elem.line) == (column, line):
-                        print(elem)
+                        print(elem.icon)
                         limit = (column, line)
+                        end = True
                         break
+                if end:
+                    break
 
             if limit[0] == New_X and limit[1] >= New_Y:
                 return True
             else:
                 return False
+
+    # ________________________________________________________________________________________________________________
+
+    def king_can_get_to(self, king: Figure, New_X, New_Y):
+        column = king.column
+        line = king.line
+
+        if abs(column - New_X) == 1 or abs(line - New_Y) == 1:
+            return True
+        else:
+            return False
 
     # Print __________________________________________________________________________________________________________
 
