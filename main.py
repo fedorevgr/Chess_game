@@ -110,6 +110,17 @@ class Chess:
                         to_delete = self.get_figure((position[0], position[1]))
                         self.Figures.remove(to_delete)
 
+        elif name == 'Rook':
+            output = self.rook_can_get_to(figure, position[0], position[1])
+
+            if output:
+                output = self.check_figures_on_rooks_way(figure, position[0], position[1])
+
+                for elem in self.Figures:
+                    if (elem.column, elem.line) == (position[0], position[1]):
+                        to_delete = self.get_figure((position[0], position[1]))
+                        self.Figures.remove(to_delete)
+
         return output
 
     def get_figure(self, position):
@@ -351,7 +362,94 @@ class Chess:
 
     # ________________________________________________________________________________________________________________
 
+    def rook_can_get_to(self, rook: Figure, New_X, New_Y):
+        column = rook.column
+        line = rook.line
 
+        if column == New_X or line == New_Y:
+            return True
+        else:
+            return False
+
+    def check_figures_on_rooks_way(self, rook: Figure, New_X, New_Y):
+        column = rook.column
+        line = rook.line
+
+        if column < New_X and line == New_Y:  # Right
+            limit = (7, line)
+
+            steps = 8 - column
+
+            for delta in range(steps):
+                column = column + delta + 1
+
+                for elem in self.Figures:
+                    if (elem.column, elem.line) == (column, line):
+                        print(elem)
+                        limit = (column, line)
+                        break
+
+            if limit[0] >= New_X and limit[1] == New_Y:
+                return True
+            else:
+                return False
+
+        elif column > New_X and line == New_Y:  # Left
+            limit = (0, line)
+
+            steps = column
+
+            for delta in range(steps):
+                column = column - delta - 1
+
+                for elem in self.Figures:
+                    if (elem.column, elem.line) == (column, line):
+                        print(elem)
+                        limit = (column, line)
+                        break
+
+            if limit[0] <= New_X and limit[1] == New_Y:
+                return True
+            else:
+                return False
+
+        elif column == New_X and line > New_Y:  # Up
+            limit = (column, 0)
+
+            steps = line
+
+            for delta in range(steps):
+                line = line - delta - 1
+
+                for elem in self.Figures:
+                    if (elem.column, elem.line) == (column, line):
+                        print(elem)
+                        limit = (column, line)
+                        break
+
+            if limit[0] == New_X and limit[1] <= New_Y:
+                return True
+            else:
+                return False
+
+        else:  # Down
+            limit = (column, 7)
+
+            steps = 8 - line
+
+            for delta in range(steps):
+                line = line + delta + 1
+
+                for elem in self.Figures:
+                    if (elem.column, elem.line) == (column, line):
+                        print(elem)
+                        limit = (column, line)
+                        break
+
+            if limit[0] == New_X and limit[1] >= New_Y:
+                return True
+            else:
+                return False
 
     # Print __________________________________________________________________________________________________________
 
