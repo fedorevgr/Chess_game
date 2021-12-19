@@ -1,3 +1,6 @@
+import os
+
+
 class Chess:
 
     def __init__(self):
@@ -15,24 +18,49 @@ class Chess:
                 color = 'Black'
             print(color, 'move ->', end=' ')
 
-            old_position, new_position = map(str, input().split(' '))
+            data = input()
+
+            if data == '':
+                if color == 'White':
+                    winner = 'Black'
+                else:
+                    winner = 'White'
+                break
+
+            try:
+                old_position, new_position = map(str, data.split(' '))
+            except ValueError:
+                if color == 'White':
+                    winner = 'Black'
+                else:
+                    winner = 'White'
+                break
+
+            data = (old_position, new_position)
 
             (old_position, new_position) = ((self.Column.index(old_position[0]), int(old_position[1]) - 1),
                                             (self.Column.index(new_position[0]), int(new_position[1]) - 1))
 
-            print(old_position, new_position, self.get_figure(old_position).icon)
+            os.system('cls')
+
+            # print(old_position, new_position, self.get_figure(old_position).icon)
+
+            after_print = ''
 
             hero = self.get_figure(old_position)
             if self.check_move(hero, new_position, color):
                 self.figure_update(hero, new_position)
                 self.Figures[self.Figures.index(hero)] = hero
 
+                self.Hystory.append(f'{hero.icon}, {hero.color}: {data[0]} - {data[1]}')
+
                 move += 1
             else:
-                print('Wrong move, repeat your move pls')
+                after_print = 'Wrong move, repeat your move pls'
 
             battlefield = self.update_field(self.Figures)
             self.print_battlefield(battlefield)
+            print(after_print)
 
             if self.WKing not in self.Figures:
                 winner = self.BKing.color
@@ -41,7 +69,8 @@ class Chess:
                 winner = self.WKing.color
                 break
 
-        print(f'Game ended,\n{winner} wins the game!')
+        print(f'Game ended,\n{winner} wins the game!\nHystory:')
+        print(*self.Hystory, sep='\n')
 
     class Figure:
         figure: str
@@ -113,10 +142,10 @@ class Chess:
                 output = self.check_figures_on_bishops_way(figure, position[0], position[1])
 
                 if output:
-                        for elem in self.Figures:
-                            if (elem.column, elem.line) == (position[0], position[1]):
-                                to_delete = self.get_figure((position[0], position[1]))
-                                self.Figures.remove(to_delete)
+                    for elem in self.Figures:
+                        if (elem.column, elem.line) == (position[0], position[1]):
+                            to_delete = self.get_figure((position[0], position[1]))
+                            self.Figures.remove(to_delete)
 
         elif name == 'Rook':
             output = self.rook_can_get_to(figure, position[0], position[1])
@@ -520,7 +549,7 @@ class Chess:
 
     def print_battlefield(self, field):
         print('┌────┬────┬────┬────┬────┬────┬────┬────┬────┐')
-        print('│COCK│ A  │ B  │ C  │ D  │ E  │ F  │ G  │ H  │')
+        print('│NICE│ A  │ B  │ C  │ D  │ E  │ F  │ G  │ H  │')
         print('├────┼────┼────┼────┼────┼────┼────┼────┼────┤')
         i = 0
         for line in field:
@@ -573,8 +602,8 @@ class Chess:
     WKnight1 = Figure('Knight', 'White', 6, 0)
     WBishop0 = Figure('Bishop', 'White', 2, 0)
     WBishop1 = Figure('Bishop', 'White', 5, 0)
-    WKing = Figure('King', 'White', 3, 0)
-    WQueen = Figure('Queen', 'White', 4, 0)
+    WKing = Figure('King', 'White', 4, 0)
+    WQueen = Figure('Queen', 'White', 3, 0)
     # _______________________________________________________________
     BRook0 = Figure('Rook', 'Black', 0, 7)
     BRook1 = Figure('Rook', 'Black', 7, 7)
@@ -582,8 +611,8 @@ class Chess:
     BKnight1 = Figure('Knight', 'Black', 6, 7)
     BBishop0 = Figure('Bishop', 'Black', 2, 7)
     BBishop1 = Figure('Bishop', 'Black', 5, 7)
-    BKing = Figure('King', 'Black', 3, 7)
-    BQueen = Figure('Queen', 'Black', 4, 7)
+    BKing = Figure('King', 'Black', 4, 7)
+    BQueen = Figure('Queen', 'Black', 3, 7)
     # _______________________________________________________________
 
     Figures = [WPawn0, WPawn1, WPawn2, WPawn3, WPawn4, WPawn5, WPawn6, WPawn7, BPawn7, BPawn6, BPawn5, BPawn4,
@@ -591,6 +620,8 @@ class Chess:
                BRook1, BRook0, BBishop1, BBishop0, BKnight1, BKnight0, BKing, BQueen]
 
     Column = 'ABCDEFGH'
+
+    Hystory = []
 
 
 Chess()
